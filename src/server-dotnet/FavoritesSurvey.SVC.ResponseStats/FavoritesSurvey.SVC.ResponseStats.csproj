@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>dotnet-FavoritesSurvey.SVC.ResponseStats-3A7AFD91-7257-48B9-A1AE-6C81DEEF99EF</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FavoritesSurvey.BLL\FavoritesSurvey.BLL.csproj" />
+    <ProjectReference Include="..\FavoritesSurvey.Core\FavoritesSurvey.Core.csproj" />
+    <ProjectReference Include="..\FavoritesSurvey.DAL\FavoritesSurvey.DAL.csproj" />
+    <ProjectReference Include="..\FavoritesSurvey.Models\FavoritesSurvey.Models.csproj" />
+  </ItemGroup>
+</Project>

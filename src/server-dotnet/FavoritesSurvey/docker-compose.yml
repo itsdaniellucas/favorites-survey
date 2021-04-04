@@ -1,0 +1,96 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP .NET Core service.
+
+version: '3.4'
+
+services:
+  favorites_survey:
+    image: favorites-survey:dev
+    container_name: fs_web
+    build:
+      context: ..
+      dockerfile: ./FavoritesSurvey/Dockerfile
+    ports:
+      - "12002:80"
+    links:
+      - "fs_db"
+      - "fs_redis"
+      - "fs_queue"
+      - "fs_service"
+    depends_on: 
+      - "fs_db"
+      - "fs_redis"
+      - "fs_queue"
+      - "fs_service"
+
+  fs_vue:
+   image: favorites-survey-vue:dev
+   container_name: fs_vue
+   build:
+     context: ../../client-vue
+     dockerfile: Dockerfile
+   ports:
+     - "12000:80"
+   links:
+     - "favorites_survey"
+   depends_on:
+     - "favorites_survey"
+
+  fs_react:
+   image: favorites-survey-react:dev
+   container_name: fs_react
+   build:
+     context: ../../client-react
+     dockerfile: Dockerfile
+   ports:
+     - "12001:80"
+   links:
+     - "favorites_survey"
+   depends_on:
+     - "favorites_survey"
+
+  fs_service:
+   image: favorites-survey-svc-responsestats:dev
+   container_name: fs_service
+   build: 
+     context: ..
+     dockerfile: ./FavoritesSurvey.SVC.ResponseStats/Dockerfile
+   links:
+     - "fs_db"
+     - "fs_redis"
+     - "fs_queue"
+   depends_on: 
+     - fs_db
+     - fs_redis
+     - fs_queue
+
+  fs_queue:
+    image: rabbitmq:3-management
+    hostname: fs_queue
+    container_name: fs_queue
+    environment:
+      - "RABBITMQ_DEFAULT_USER=admin"
+      - "RABBITMQ_DEFAULT_PASS=v03P4UVRkD"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  
+  fs_redis:
+    image: redis:6.0
+    container_name: fs_redis
+    ports: 
+      - "6379:6379"
+
+  fs_db:
+    image: mcr.microsoft.com/mssql/server:2019-CU8-ubuntu-16.04
+    container_name: fs_db
+    volumes:
+      - fs_db_data:/var/opt/mssql
+    environment:
+      - "SA_PASSWORD=3LK4pDnutuP7*"
+      - "ACCEPT_EULA=Y"
+    ports:
+      - "1433:1433"
+
+
+volumes:
+  fs_db_data:
